@@ -1,22 +1,72 @@
-#İbrahim Varola tarafından oluşturulmuştur ve düzenlenmiştir.
+#İbrahim Varola tarafından oluşturulmuştur.
+#Ege Kalkandelen ve Berkant Demirci' ye yardımları için teşekkürlerimi sunarım.
 
 #!/usr/bin/env bash
 
 clear
 
-kullanicilar=(hyuce ibrahimvarola berkant)
-kullanici_sifre=(1234 abcd asdf)
-kullanici_seviye=(1 1 1)
+kullanicilar=(root hyuce ibrahimvarola berkant)
+kullanici_sifre=(root 1234 abcd qwer)
+kullanici_seviye=(1 1 1 1)
 degisken1=0
+secenek=0
 kullanici_adi_tanimlama() {
 	echo -n "Tanımlayacağınız kullanıcının adını giriniz: "
 	read yeni_kullanici
 	kullanicilar=("${kullanicilar[@]}" "$yeni_kullanici")
 }
 
+kullanici_seviyesi_belirleme() {
+while [ 1 ]
+do
+read -p "Seçmiş olduğunuz ${kullanicilar[$((secenek-1))]} kullanıcısının seviyesini giriniz(1 - 0): " kull_sev
+if [ $kull_sev -le 1 ]
+	then
+		kullanici_seviye[$((secenek-1))]=$kull_sev
+		echo "işlem tamam!!"
+		break
+else
+	echo "Yanlış değer girdiniz, lütfen tekrar deneyiniz."
+fi
+done
+}
+kullanici_kaldirma () {
+   clear
+while [ 1 ]
+		do
+		echo "-----------------------------------------------------------------------"
+		degisken1=0
+		kullanici_sayisi=${#kullanicilar[*]}
+	if [ $degisken1 -eq  $kullanici_sayisi ] ; then
+        echo "Sistemde kullanıcı bulunmamaktadır"
+            break
+      else
+		while [ $degisken1 -lt $kullanici_sayisi ]
+		do
+    	echo "$((degisken1+1))- ${kullanicilar[$degisken1]}"
+    	degisken1=$((degisken1+1))
+		done
+    fi
+   break
+done
+
+   echo -n "Silmek istediğiniz kullanıcıyı seçiniz :"
+      read secim
+    unset $kullanicilar[$(($secim-1))] 
+    #unset $kullanici_seviye[$(($secim-1))]
+    unset $kullanici_sifre[$(($secim-1))]
+  echo "Silme işlemi başarılı"
+
+}
+
 kullanici_sifresi_belirleme() {
+	read -p "Seçmiş olduğunuz ${kullanicilar[$((secenek-1))]} kullanıcısının şifresini belirleyiniz: " kull_pass
+	kullanici_sifre[$((secenek-1))]=$kull_pass
+}
+
+yeni_kullanici_sifresi_belirleme() {
 	echo -n "Tanımlamış olduğunuz $yeni_kullanici kullanıcısının şifresini belirleyiniz : "
-	read -s yeni_kullanici_sifre ; echo "                      "
+	read -s yeni_kullanici_sifre ; echo 
         echo -n "Şifreyi tekrar giriniz :"
       while [ 1 ] ; do
   read -s sifre_dogrulama ; echo "                        "
@@ -47,23 +97,6 @@ fi
 done
 }
 
-kullanici_seviyesi_belirleme() {
-while [ 1 ]
-do
-echo -n "Seçmiş olduğunuz ${kullanicilar[$((secenek-1))]} kullanıcısının seviyesini belirleyiniz(0 ya da 1): "
-read seviye
-if [ $seviye -le 1 ]
-	then
-		kullanici_seviye=("${kullanici_seviye[$((secenek))]}" "$seviye")
-		echo "Kullanıcı ${kullanicilar[$((secenek-1))]}' nın seviyesi başarıyla değiştirildi!"
-		break
-else
-	echo "Yanlış değer girdiniz, lütfen tekrar deneyiniz."
-fi
-done
-}
-
-
 user_root() {
    while [ 1 ] 
    do
@@ -73,7 +106,8 @@ user_root() {
    echo "2- Kullanıcı seviyesi belirleme"
    echo "3- Kullanıcı şifresi değiştirme-belirleme"
    echo "4- Kullanıcı bilgilerini görüntüleme"
-   echo "5- Çıkış"
+   echo "5- Kullanıcı silme"
+   echo "6- Çıkış"
 
    echo -n "İşleminizi giriniz: "
    read islem
@@ -84,7 +118,7 @@ user_root() {
 
 		kullanici_adi_tanimlama
 	
-		kullanici_sifresi_belirleme
+		yeni_kullanici_sifresi_belirleme
 	
 		yeni_kullanici_seviyesi_belirleme
 
@@ -97,16 +131,16 @@ user_root() {
 		echo "-----------------------------------------------------------------------"
 		degisken1=0
 		kullanici_sayisi=${#kullanicilar[*]}
+		
 		while [ $degisken1 -lt $kullanici_sayisi ]
 		do
     	echo "$((degisken1+1))- ${kullanicilar[$degisken1]}"
     	degisken1=$((degisken1+1))
 		done
+		
+		read -p "Lütfen değişiklik yapmak istediğiniz kullanıcının sahip olduğu numarayı seçiniz: " secenek
 
-		echo -n "Lütfen değişiklik yapmak istediğiniz kullanıcının sahip olduğu numarayı seçiniz: "
-		read secenek
-
-		if [ $secenek -gt $((degisken1)) ]
+		if [ $secenek -gt $((degisken1)) -o $secenek -eq 0 ]
 			then
 				echo "Yanlış seçenek seçtiniz, lütfen tekrar deneyiniz."
 		else
@@ -114,20 +148,48 @@ user_root() {
 			break
 		fi
 		done
+		echo
 	  ;;
 	3)
-		echo "Yapım Aşamasında!"
+		clear
+		while [ 1 ]
+		do
+		echo "-----------------------------------------------------------------------"
+		degisken1=0
+		kullanici_sayisi=${#kullanicilar[*]}
+	if [ $degisken1 -eq  $kullanici_sayisi ] ; then
+        echo "Sistemde kullanıcı bulunmamaktadır"
+            break
+      else
+		while [ $degisken1 -lt $kullanici_sayisi ]
+		do
+    	echo "$((degisken1+1))- ${kullanicilar[$degisken1]}"
+    	degisken1=$((degisken1+1))
+		done
+		
+
+		read -p "Lütfen değişiklik yapmak istediğiniz kullanıcının sahip olduğu numarayı seçiniz: " secenek
+
+		if [ $secenek -gt $((degisken1)) -o $secenek -eq 0 ]
+			then
+				echo "Yanlış seçenek seçtiniz, lütfen tekrar deneyiniz."
+		else
+			kullanici_sifresi_belirleme
+			break
+		fi
+       fi
+		done
+		echo
 	  ;;
-	5)
+	6)
 		exit
 	  ;;
 	4)
-	echo "-----------------------------------------------------------------------"
-                degisken1=0
+		degisken1=0
 		kullanici_sayisi=${#kullanicilar[*]} #kullanicilar dizisinde bulunan elemanların sayisini kullanici_sayisi degiskenine atadı
 		
-		
-	while [ $degisken1 -le $kullanici_sayisi ]
+		echo
+			while [ $degisken1 -le $kullanici_sayisi ]
 		do
             if [ "$degisken1" -eq "0" -a "$kullanici_sayisi" -eq "0" ] ; then
                 echo "Sistemde kullanıcı yoktur"
@@ -141,24 +203,13 @@ user_root() {
            fi
         done
 		;;
+       5)
+          kullanici_kaldirma
+        ;;
 	*)
 	  echo "Yanlış seçenek numarası girdiniz, tekrar deneyiniz."
 	;;
    esac
 done
-
 }
-user_user() {
-   echo "1- Kullanıcı bilgilerini görüntüle"
-
-   echo -n "İşleminizi giriniz: "
-   read islem
-}
-
-user_root #YAPIM ASAMASINDA OLDUGU ICIN FONKSIYONU DIREK CAGIRIYORUM
-#Yapılan düzeltmeler
-#seçeneklere 5 eklendiz ve 4 ile değiştirildi
-#şifre koyarken doğrulama eklendi
-#sistemde kullanıcı yok iken 4 işleminde kullanıcı yok ibaresi eklendi
-#kullanıcılara berkant eklendi :)
-#diziden eleman silmeyi öğrenmeliyiz
+user_root
