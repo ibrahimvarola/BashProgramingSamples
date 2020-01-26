@@ -1,5 +1,6 @@
 #İbrahim Varola tarafından oluşturulmuştur.
 #Ege Kalkandelen ve Berkant Demirci' ye yardımları için teşekkürlerimi sunarım.
+#branch denemesi yapıldı!
 
 #!/usr/bin/env bash
 
